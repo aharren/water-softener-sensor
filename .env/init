@@ -1,0 +1,12 @@
+#! /usr/bin/env zsh
+PYVER=3.13
+PYTHON_ROOT="/Library/Frameworks/Python.framework/Versions/3.13"
+
+VENV_ROOT="${0:a:h}/.venv"
+mkdir -p "${VENV_ROOT}"
+cd "${VENV_ROOT}"
+
+python3 -m venv esphome
+source "${VENV_ROOT}/esphome/bin/activate"
+
+pip3 install esphome==2025.12.7

@@ -1,0 +1,5 @@
+# source activate
+
+VENV_ROOT="${0:a:h}/.venv"
+
+source "${VENV_ROOT}/esphome/bin/activate"
