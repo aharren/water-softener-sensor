@@ -7,6 +7,7 @@ A vl53l0x-based sensor for a water softener to detect the regeneration salt leve
 ![](.readme/image-0.png)
 ![](.readme/image-1.png)
 ![](.readme/image-2.png)
+![](.readme/image-3.png)
 
 ## Development Environment
 
