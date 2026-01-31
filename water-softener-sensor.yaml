@@ -55,3 +55,6 @@ sensor:
           datapoints:
             - ${distance_full_in_m} -> 100.0
             - ${distance_empty_in_m} -> 0.0
+      - clamp:
+          min_value: 0
+          max_value: 100
