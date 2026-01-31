@@ -39,3 +39,9 @@ substitutions:
   distance_full_in_m: 0.3
   distance_empty_in_m: 0.5
 ```
+
+## Case 3D Model
+
+The 3D model for the case is available as an [STL file](water-softener-sensor-case.stl) for an ESP32 D1 Mini board and a vl53l0x module.
+
+For components with other dimensions, the [parametric 3D model](https://github.com/aharren/parametric-3d-models/tree/main/models/water-softener-sensor-case) can be modified as required.
