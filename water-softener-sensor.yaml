@@ -1,6 +1,10 @@
 esphome:
   name: "water-softener-sensor"
 
+substitutions:
+  distance_full_in_m: 0.3
+  distance_empty_in_m: 0.5
+
 esp32:
   board: wemos_d1_mini32
   framework:
@@ -44,17 +48,10 @@ sensor:
     accuracy_decimals: 0
     update_interval: 10s
     lambda: |-
-      const float v_min = 0.30f;
-      const float v_max = 0.50f;
-      const float v_distance = v_max - v_min;
-      float v = id(distance).state;
-      if (!std::isfinite(v)) {
-        return 0.0f;
-      }
-      float vc = std::min(std::max(v_min, v), v_max) - v_min;
-      return (1.0f - (vc / v_distance)) * 100.0f;
+      return id(distance).state;
     filters:
-      - median:
-          window_size: 10
-          send_every: 1
-          send_first_at: 1
+      - calibrate_linear:
+          method: exact
+          datapoints:
+            - ${distance_full_in_m} -> 100.0
+            - ${distance_empty_in_m} -> 0.0
