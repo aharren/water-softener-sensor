@@ -32,10 +32,11 @@ sensor:
     update_interval: 10s
     long_range: true
     filters:
-      - median:
-          window_size: 10
-          send_every: 1
-          send_first_at: 1
+      - lambda: |-
+          const float decrease_min_delta = 0.03;
+          static float x_max = 0.0;
+          x_max = (x > x_max || x < x_max - decrease_min_delta) ? x : x_max;
+          return x_max;
 
   - platform: template
     name: " level"
