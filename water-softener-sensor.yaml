@@ -28,6 +28,14 @@ i2c:
   scl: GPIO22
   scan: true
 
+switch:
+  - platform: gpio
+    id: led_status
+    pin:
+      number: GPIO2
+      mode: OUTPUT
+    restore_mode: ALWAYS_OFF
+
 sensor:
   - platform: vl53l0x
     id: sensor_distance
