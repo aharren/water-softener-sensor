@@ -4,6 +4,7 @@ esphome:
 substitutions:
   distance_full_in_m: 0.3
   distance_empty_in_m: 0.5
+  level_low_in_percent: 10
 
 esp32:
   board: wemos_d1_mini32
@@ -43,6 +44,32 @@ switch:
       number: GPIO2
       mode: OUTPUT
     restore_mode: ALWAYS_OFF
+
+interval:
+  - interval: 60s
+    startup_delay: 30s
+    then:
+      - repeat:
+          count: !lambda |-
+            const float level = id(sensor_level).state;
+            // sensor issue
+            if (!std::isfinite(level)) {
+              ESP_LOGD("led_status", "sensor issue -> 10");
+              return 10;
+            }
+            // low level warning
+            if (level < (${level_low_in_percent})) {
+              ESP_LOGD("led_status", "salt level is low -> 5");
+              return 5;
+            }
+            // heartbeat
+            ESP_LOGD("led_status", "heartbeat -> 1");
+            return 1;
+          then:
+            - switch.turn_on: led_status
+            - delay: 200ms
+            - switch.turn_off: led_status
+            - delay: 200ms
 
 sensor:
   - platform: vl53l0x
