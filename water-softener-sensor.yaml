@@ -30,7 +30,7 @@ i2c:
 
 sensor:
   - platform: vl53l0x
-    id: distance
+    id: sensor_distance
     name: " distance"
     address: 0x29
     update_interval: 10s
@@ -43,12 +43,13 @@ sensor:
           return x_max;
 
   - platform: template
+    id: sensor_level
     name: " level"
     unit_of_measurement: "%"
     accuracy_decimals: 0
     update_interval: 10s
     lambda: |-
-      return id(distance).state;
+      return id(sensor_distance).state;
     filters:
       - calibrate_linear:
           method: exact
