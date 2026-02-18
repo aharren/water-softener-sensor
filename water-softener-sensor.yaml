@@ -102,3 +102,11 @@ sensor:
       - clamp:
           min_value: 0
           max_value: 100
+    on_value_range:
+      - below: ${level_low_in_percent}
+        then:
+          - homeassistant.action:
+              action: persistent_notification.create
+              data:
+                title: 'Water Softener'
+                message: 'Salt level is low'
