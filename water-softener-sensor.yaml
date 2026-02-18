@@ -2,6 +2,7 @@ esphome:
   name: "water-softener-sensor"
 
 substitutions:
+  # configuration values
   distance_full_in_m: 0.3
   distance_empty_in_m: 0.5
   level_low_in_percent: 10
@@ -23,6 +24,8 @@ wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
   min_auth_mode: WPA2
+  # indicate wifi status via the status LED
+  # - blink 3 times: wifi connected
   on_connect:
     - repeat:
         count: 3
@@ -46,6 +49,10 @@ switch:
     restore_mode: ALWAYS_OFF
 
 interval:
+  # indicate overall status via status LED
+  # - blink 10 times: sensor issue (no/bad value measured); sensor not working, out of range, etc.
+  # - blink 5 times: low salt level detected (level_low_in_percent)
+  # - blink 1 time: heartbeat signal
   - interval: 60s
     startup_delay: 30s
     then:
@@ -79,6 +86,7 @@ sensor:
     update_interval: 10s
     long_range: true
     filters:
+      # keep a maximum value for the distance, unless it decreases significantly
       - lambda: |-
           const float decrease_min_delta = 0.03;
           static float x_max = 0.0;
@@ -94,15 +102,18 @@ sensor:
     lambda: |-
       return id(sensor_distance).state;
     filters:
+      # map distance values to 0% and 100%
       - calibrate_linear:
           method: exact
           datapoints:
             - ${distance_full_in_m} -> 100.0
             - ${distance_empty_in_m} -> 0.0
+      # restrict values to the range 0% to 100%
       - clamp:
           min_value: 0
           max_value: 100
     on_value_range:
+      # create a Home Assistant notification on low salt level
       - below: ${level_low_in_percent}
         then:
           - homeassistant.action:
